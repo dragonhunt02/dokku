@@ -20,25 +20,6 @@ get_proxy_labels_file_path() {
   fn-get-proxy-labels-file-path "$APP" "$proxy"
 }
 
-get_phases() {
-  declare desc="returns array of passed passes if all are in allowed array"
-  local passed_phases_list="$1"
-  # shellcheck disable=SC2001
-  local -r phases_allowed=$(sed -e 's/ /\|/g' <<<"${AVAILABLE_PHASES[@]}")
-  local phase
-  local passed_phases
-  if [[ -n "$passed_phases_list" ]]; then
-    OIFS=$IFS
-    IFS=','
-    read -ra passed_phases <<<"$passed_phases_list"
-    IFS=$OIFS
-    for phase in "${passed_phases[@]}"; do
-      [[ "$phase" == @($phases_allowed) ]] || dokku_log_fail "Phase(s) must be one of [${AVAILABLE_PHASES[*]}]"
-    done
-    echo "${passed_phases[@]}"
-  fi
-}
-
 create_proxy_labels_file_if_required() {
   declare desc="create proxy labels file"
   local proxy_labels_file_path="$1"
@@ -48,25 +29,11 @@ create_proxy_labels_file_if_required() {
 }
 
 display_proxy_labels() {
-  declare desc="print docker-options for specified phase"
+  declare desc="print container labels for specified proxy"
   local proxy="$1"
   local proxy_file_path="$2"
   echo "${proxy^} labels:"
   sed -e 's/^/    /' "$proxy_file_path"
-}
-
-display_passed_phases_options() {
-  declare desc="print docker options for list of specified phases"
-  local passed_phases=("${!1}")
-  local phase
-  for phase in "${passed_phases[@]}"; do
-    local phase_file_path="$(get_phase_file_path "$phase")"
-    if [[ ! -s "$phase_file_path" ]]; then
-      echo "${phase^} options: none"
-    else
-      display_phase_options "$phase" "$phase_file_path"
-    fi
-  done
 }
 
 add_passed_proxy_label() {
