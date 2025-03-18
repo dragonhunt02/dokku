@@ -17,7 +17,7 @@ cmd-plugin-label() {
 
   # [[ -z "$passed_label_value" ]] && dokku_log_fail "Please specify a label value to add to the app"
 
-  add_passed_label "${passed_label_name}" "${passed_label_value}"
+  add_passed_proxy_label "$cmd" "${passed_label_name}" "${passed_label_value}"
 
 
 }
