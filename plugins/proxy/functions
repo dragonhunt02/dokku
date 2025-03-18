@@ -39,11 +39,11 @@ get_phases() {
   fi
 }
 
-create_phase_file_if_required() {
-  declare desc="create phase file"
-  local phase_file_path="$1"
-  [[ -f "$phase_file_path" ]] || {
-    touch "$phase_file_path"
+create_proxy_labels_file_if_required() {
+  declare desc="create proxy labels file"
+  local proxy_labels_file_path="$1"
+  [[ -f "$proxy_labels_file_path" ]] || {
+    touch "$proxy_labels_file_path"
   }
 }
 
@@ -88,7 +88,7 @@ add_passed_docker_option() {
   local phase
   for phase in "${passed_phases[@]}"; do
     local phase_file_path="$(get_phase_file_path "$phase")"
-    create_phase_file_if_required "$phase_file_path"
+    create_proxy_labels_file_if_required "$phase_file_path"
     echo "${passed_option_string}" >>"$phase_file_path"
     local all_phase_options="$(<"$phase_file_path")"
     echo -e "${all_phase_options}" | sed '/^$/d' | sort -u >"$phase_file_path"
