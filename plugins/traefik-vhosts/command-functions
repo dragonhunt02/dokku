@@ -4,6 +4,24 @@ source "$PLUGIN_AVAILABLE_PATH/traefik-vhosts/internal-functions"
 set -eo pipefail
 [[ $DOKKU_TRACE ]] && set -x
 
+cmd-plugin-label() {
+  declare desc="sets container label"
+  declare cmd="traefik:label"
+  [[ "$1" == "$cmd" ]] && shift 1
+  declare APP="$1" && shift 1
+
+  local passed_label_name="$1"
+  [[ -z "$passed_label_name" ]] && dokku_log_fail "Please specify a label to add to the app"
+  local passed_label_value="$2"
+
+
+  # [[ -z "$passed_label_value" ]] && dokku_log_fail "Please specify a label value to add to the app"
+
+  add_passed_label "${passed_label_name}" "${passed_label_value}"
+
+
+}
+
 cmd-traefik-report() {
   declare desc="displays a traefik report for one or more apps"
   declare cmd="traefik:report"
