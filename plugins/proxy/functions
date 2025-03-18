@@ -15,7 +15,8 @@ fn-get-proxy-labels-file-path() {
 get_proxy_labels_file_path() {
   declare desc="return proxy labels config file path for specified proxy"
   local proxy_labels_file_prefix="PROXY_LABELS_"
-  local proxy=$1
+  local APP=${1}
+  local proxy=${2}
   [[ "$APP" && "$proxy" ]] || dokku_log_fail "Error: proxy_labels_file_path is incomplete."
   fn-get-proxy-labels-file-path "$APP" "$proxy"
 }
@@ -37,11 +38,12 @@ display_proxy_labels() {
 }
 
 add_passed_proxy_label() {
-  declare desc="adds container label for specified proxy"
-  local proxy="${1}"
-  local passed_label_name="${2}"
-  local passed_label_value="${3}"
-  shift 3
+  declare desc="adds container label to app for specified proxy"
+  local APP="${1}"
+  local proxy="${2}"
+  local passed_label_name="${3}"
+  local passed_label_value="${4}"
+  shift 4
   local proxy_labels_file_path="$(get_proxy_labels_file_path "$APP" "$proxy")"
   create_proxy_labels_file_if_required "$proxy_labels_file_path"
   echo "--label ${passed_label_name}=${passed_label_value} " >>"$proxy_labels_file_path"
@@ -49,7 +51,7 @@ add_passed_proxy_label() {
 }
 
 remove_passed_proxy_label() {
-  declare desc="removes container label for specified proxy"
+  declare desc="removes container label from app for specified proxy"
   local proxy="${1}"
   local passed_label_name="${2}"
   shift 2
