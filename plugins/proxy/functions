@@ -7,7 +7,8 @@ AVAILABLE_PROXIES=(caddy traefik)
 
 fn-get-proxy-labels-file-path() {
   declare desc="return proxy labels config file path for specified proxy"
-  local APP="$1" PROXY="$2"
+  local APP="$1"
+  local PROXY="$2"
   local PROXY_FILE="${DOKKU_ROOT}/${APP}/PROXY_LABELS_${PROXY^^}"
   echo "$PROXY_FILE"
 }
@@ -15,14 +16,14 @@ fn-get-proxy-labels-file-path() {
 get_proxy_labels_file_path() {
   declare desc="return proxy labels config file path for specified proxy"
   local proxy_labels_file_prefix="PROXY_LABELS_"
-  local APP=${1}
-  local proxy=${2}
-  [[ "$APP" && "$proxy" ]] || dokku_log_fail "Error: proxy_labels_file_path is incomplete."
-  fn-get-proxy-labels-file-path "$APP" "$proxy"
+  local APP="$1"
+  local PROXY="$2"
+  [[ "$APP" && "$PROXY" ]] || dokku_log_fail "Error: proxy_labels_file_path is incomplete."
+  fn-get-proxy-labels-file-path "$APP" "$PROXY"
 }
 
 create_proxy_labels_file_if_required() {
-  declare desc="create proxy labels file"
+  declare desc="create proxy labels file for app"
   local proxy_labels_file_path="$1"
   [[ -f "$proxy_labels_file_path" ]] || {
     touch "$proxy_labels_file_path"
@@ -30,21 +31,21 @@ create_proxy_labels_file_if_required() {
 }
 
 display_proxy_labels() {
-  declare desc="print container labels for specified proxy"
-  local proxy="$1"
+  declare desc="print app container labels for specified proxy"
+  local PROXY="$1"
   local proxy_file_path="$2"
-  echo "${proxy^} labels:"
+  echo "${PROXY^} labels:"
   sed -e 's/^/    /' "$proxy_file_path"
 }
 
 add_passed_proxy_label() {
   declare desc="adds container label to app for specified proxy"
-  local APP="${1}"
-  local proxy="${2}"
-  local passed_label_name="${3}"
-  local passed_label_value="${4}"
+  local APP="$1"
+  local PROXY="$2"
+  local passed_label_name="$3"
+  local passed_label_value="$4"
   shift 4
-  local proxy_labels_file_path="$(get_proxy_labels_file_path "$APP" "$proxy")"
+  local proxy_labels_file_path="$(get_proxy_labels_file_path "$APP" "$PROXY")"
   create_proxy_labels_file_if_required "$proxy_labels_file_path"
   echo "--label ${passed_label_name}=${passed_label_value} " >>"$proxy_labels_file_path"
   echo -e "${all_proxy_labels_options}" | sed '/^$/d' | sort -u >"$proxy_labels_file_path"
@@ -52,11 +53,12 @@ add_passed_proxy_label() {
 
 remove_passed_proxy_label() {
   declare desc="removes container label from app for specified proxy"
-  local proxy="${1}"
-  local passed_label_name="${2}"
-  shift 2
+  local APP="$1"
+  local PROXY="$2"
+  local passed_label_name="$3"
+  shift 3
 
-  local proxy_labels_file_path="$(get_proxy_labels_file_path "$APP" "$proxy")"
+  local proxy_labels_file_path="$(get_proxy_labels_file_path "$APP" "$PROXY")"
   [[ ! -s "$proxy_labels_file_path" ]] || {
     local all_proxy_labels="$(<"$proxy_labels_file_path")"
     local all_proxy_labels=$(echo -e "${all_proxy_labels}" | sed "s#^--label ${passed_label_name}=.*\$##")
