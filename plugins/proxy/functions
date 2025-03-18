@@ -5,19 +5,19 @@ source "$PLUGIN_CORE_AVAILABLE_PATH/common/functions"
 
 AVAILABLE_PROXIES=(caddy traefik)
 
-fn-get-phase-file-path() {
-  declare desc="return proxy label config file path for specified proxy"
+fn-get-proxy-labels-file-path() {
+  declare desc="return proxy labels config file path for specified proxy"
   local APP="$1" PROXY="$2"
   local PROXY_FILE="${DOKKU_ROOT}/${APP}/PROXY_LABELS_${PROXY^^}"
   echo "$PROXY_FILE"
 }
 
-get_phase_file_path() {
-  declare desc="return proxy label config file path for specified proxy"
-  local phase_file_prefix="PROXY_LABELS_"
-  local phase=$1
-  [[ "$APP" && "$phase" ]] || dokku_log_fail "Error: phase_file_path is incomplete."
-  fn-get-phase-file-path "$APP" "$phase"
+get_proxy_labels_file_path() {
+  declare desc="return proxy labels config file path for specified proxy"
+  local proxy_labels_file_prefix="PROXY_LABELS_"
+  local proxy=$1
+  [[ "$APP" && "$proxy" ]] || dokku_log_fail "Error: proxy_labels_file_path is incomplete."
+  fn-get-proxy-labels-file-path "$APP" "$proxy"
 }
 
 get_phases() {
