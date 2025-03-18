@@ -47,23 +47,12 @@ create_proxy_labels_file_if_required() {
   }
 }
 
-display_phase_options() {
+display_proxy_labels() {
   declare desc="print docker-options for specified phase"
-  local phase="$1"
-  local phase_file_path="$2"
-  echo "${phase^} options:"
-  sed -e 's/^/    /' "$phase_file_path"
-}
-
-display_all_phases_options() {
-  declare desc="print docker-options for all phases"
-  local phases=("${AVAILABLE_PHASES[@]}")
-  for phase in "${phases[@]}"; do
-    local phase_file_path="$(get_phase_file_path "$phase")"
-    if [[ -s "$phase_file_path" ]]; then
-      display_phase_options "$phase" "$phase_file_path"
-    fi
-  done
+  local proxy="$1"
+  local proxy_file_path="$2"
+  echo "${proxy^} labels:"
+  sed -e 's/^/    /' "$proxy_file_path"
 }
 
 display_passed_phases_options() {
@@ -80,31 +69,28 @@ display_passed_phases_options() {
   done
 }
 
-add_passed_docker_option() {
-  declare desc="adds docker option to specified phases"
-  local proxy="$1"
+add_passed_proxy_label() {
+  declare desc="adds container label for specified proxy"
+  local proxy="${1}"
   local passed_label_name="${2}"
   local passed_label_value="${3}"
-  shift 2
+  shift 3
   local proxy_labels_file_path="$(get_proxy_labels_file_path "$proxy")"
   create_proxy_labels_file_if_required "$proxy_labels_file_path"
   echo "--label ${passed_label_name}=${passed_label_value} " >>"$proxy_labels_file_path"
-  local all_proxy_labels_options="$(<"$proxy_labels_file_path")"
   echo -e "${all_proxy_labels_options}" | sed '/^$/d' | sort -u >"$proxy_labels_file_path"
 }
 
-remove_passed_docker_option() {
-  declare desc="removes docker option from specified phases"
-  local passed_phases=("${!1}")
-  shift
-  local passed_option_string="$*"
-  local phase
-  for phase in "${passed_phases[@]}"; do
-    local phase_file_path="$(get_phase_file_path "$phase")"
-    [[ ! -s "$phase_file_path" ]] || {
-      local all_phase_options="$(<"$phase_file_path")"
-      local all_phase_options=$(echo -e "${all_phase_options}" | sed "s#^${passed_option_string}\$##")
-      echo -e "${all_phase_options}" | sed '/^$/d' | sort -u >"$phase_file_path"
-    }
-  done
+remove_passed_proxy_label() {
+  declare desc="removes container label for specified proxy"
+  local proxy="${1}"
+  local passed_label_name="${2}"
+  shift 2
+
+  local proxy_labels_file_path="$(get_proxy_labels_file_path "$proxy")"
+  [[ ! -s "$proxy_labels_file_path" ]] || {
+    local all_proxy_labels="$(<"$proxy_labels_file_path")"
+    local all_proxy_labels=$(echo -e "${all_proxy_labels}" | sed "s#^--label ${passed_label_name}=.*\$##")
+    echo -e "${all_proxy_labels}" | sed '/^$/d' | sort -u >"$proxy_labels_file_path"
+  }
 }
