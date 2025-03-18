@@ -82,17 +82,15 @@ display_passed_phases_options() {
 
 add_passed_docker_option() {
   declare desc="adds docker option to specified phases"
-  local passed_phases=("${!1}")
-  shift
-  local passed_option_string="$*"
-  local phase
-  for phase in "${passed_phases[@]}"; do
-    local phase_file_path="$(get_phase_file_path "$phase")"
-    create_proxy_labels_file_if_required "$phase_file_path"
-    echo "${passed_option_string}" >>"$phase_file_path"
-    local all_phase_options="$(<"$phase_file_path")"
-    echo -e "${all_phase_options}" | sed '/^$/d' | sort -u >"$phase_file_path"
-  done
+  local proxy="$1"
+  local passed_label_name="${2}"
+  local passed_label_value="${3}"
+  shift 2
+  local proxy_labels_file_path="$(get_proxy_labels_file_path "$proxy")"
+  create_proxy_labels_file_if_required "$proxy_labels_file_path"
+  echo "--label ${passed_label_name}=${passed_label_value} " >>"$proxy_labels_file_path"
+  local all_proxy_labels_options="$(<"$proxy_labels_file_path")"
+  echo -e "${all_proxy_labels_options}" | sed '/^$/d' | sort -u >"$proxy_labels_file_path"
 }
 
 remove_passed_docker_option() {
