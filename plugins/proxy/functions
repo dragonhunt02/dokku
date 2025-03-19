@@ -27,7 +27,7 @@ fn-report-proxy-label-overwrite() {
           local label_name=$(echo "$line" | sed -e 's#^--label [\'\"]?([^=])+=#\1#')
           #$(echo "$line" | cut -d " " -f 2- | cut -d "=" -f 1 | sed -e 's/^[\'\"]//')
 
-          local match=$("$label_name" | sed -e 's###')
+          local match=$(echo "$LABELS" | grep "$label_name" )
           if [[ -n "$match" ]]; then
             dokku_log_warn "dokku $match was overwritten by user-set proxy label."
           fi
