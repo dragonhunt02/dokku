@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 source "$PLUGIN_CORE_AVAILABLE_PATH/common/functions"
+source "$PLUGIN_CORE_AVAILABLE_PATH/proxy/functions"
 source "$PLUGIN_AVAILABLE_PATH/traefik-vhosts/internal-functions"
 set -eo pipefail
 [[ $DOKKU_TRACE ]] && set -x
@@ -128,6 +129,13 @@ trigger-traefik-vhosts-docker-args-process-deploy() {
         output="$output --label \"traefik.http.routers.$APP-$PROC_TYPE-https.rule=$traefik_domains\""
       fi
     fi
+  fi
+
+  local proxy_labels_file=$(fn-get-proxy-labels-file-path "$APP" traefik)
+  
+  if [[ -f "$proxy_labels_file" ]]; then
+    proxy_labels="$(echo $proxy_labels_file | tr '\r\n' ' ')"
+    output="$output$proxy_labels"
   fi
 
   echo -n "$STDIN$output"
