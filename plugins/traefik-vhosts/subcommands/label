@@ -3,4 +3,4 @@ source "$PLUGIN_AVAILABLE_PATH/traefik-vhosts/command-functions"
 set -eo pipefail
 [[ $DOKKU_TRACE ]] && set -x
 
-cmd-plugin-label "$@"
+cmd-traefik-label "$@"
