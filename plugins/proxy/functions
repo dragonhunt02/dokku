@@ -5,6 +5,43 @@ source "$PLUGIN_CORE_AVAILABLE_PATH/common/functions"
 
 AVAILABLE_PROXIES=(caddy traefik)
 
+fn-report-proxy-label-overwrite() {
+  LABELS="$1"
+  PROXY_LABELS_FILE_PATH="$2"
+  shift 2
+
+  if [[ -f "$PROXY_FILE_PATH" ]]; then
+    local DONE=false
+    until $DONE; do
+      local line
+      read -r line || local DONE=true
+
+      [[ -z "$line" ]] && continue
+
+      case "$line" in
+        \#*)
+          continue
+          ;;
+
+        --label*)
+          local label_name=$(echo "$line" | sed -e 's#^--label [\'\"]?([^=])+=#\1#')
+          #$(echo "$line" | cut -d " " -f 2- | cut -d "=" -f 1 | sed -e 's/^[\'\"]//')
+
+          local match=$("$label_name" | sed -e 's###')
+          if [[ -n "$match" ]]; then
+            dokku_log_warn "dokku $match was overwritten by user-set proxy label."
+          fi
+          continue
+          ;;
+
+        *)
+          dokku_log_warn "Invalid line '$line' in proxy label file $PROXY_FILE_PATH"
+          ;;
+      esac
+    done <"$PROXY_LABELS_FILE_PATH"
+  fi
+}
+
 fn-get-proxy-labels-file-path() {
   declare desc="return proxy labels config file path for specified proxy"
   local APP="$1"
