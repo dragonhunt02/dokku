@@ -32,10 +32,14 @@ create_proxy_labels_file_if_required() {
 
 display_proxy_labels() {
   declare desc="print app container labels for specified proxy"
-  local PROXY="$1"
-  local proxy_file_path="$2"
+  local APP="$1"
+  local PROXY="$2"
+  shift 2
+
+  local proxy_labels_file_path=$(get_proxy_labels_file_path "$APP" "$PROXY")
+  #local all_proxy_labels="$(<"$proxy_labels_file_path")"
   echo "${PROXY^} labels:"
-  sed -e 's/^/    /' "$proxy_file_path"
+  sed -e 's/^/    /' "$proxy_labels_file_path"
 }
 
 add_passed_proxy_label() {
