@@ -9,7 +9,7 @@ cmd-traefik-label() {
   declare desc="sets container label"
   declare cmd="traefik:label"
   [[ "$1" == "$cmd" ]] && shift 1
-  
+
   local PROXY="traefik"
 
   declare APP="$1" && shift 1
@@ -18,8 +18,8 @@ cmd-traefik-label() {
   local action="$1" && shift 1
 
   if [[ "$action" == "show" ]]; then
-    display_proxy_labels "$APP" "$PROXY";
-    return 0;
+    display_proxy_labels "$APP" "$PROXY"
+    return 0
   fi
 
   [[ "$action" != "set" && "$action" != "unset" ]] && dokku_log_fail "Please specify a valid action ('set' or 'unset')"
@@ -30,13 +30,12 @@ cmd-traefik-label() {
   local passed_label_value="$1"
   # [[ -z "$passed_label_value" ]] && dokku_log_fail "Please specify a label value to add to the app"
 
-
   if [[ "$action" == "set" ]]; then
-    add_passed_proxy_label "$APP" "$PROXY" "${passed_label_name}" "${passed_label_value}";
+    add_passed_proxy_label "$APP" "$PROXY" "${passed_label_name}" "${passed_label_value}"
   elif [[ "$action" == "unset" ]]; then
-    remove_passed_proxy_label "$APP" "$PROXY" "${passed_label_name}";
+    remove_passed_proxy_label "$APP" "$PROXY" "${passed_label_name}"
   else
-    dokku_log_fail "Internal error";
+    dokku_log_fail "Internal error"
   fi
 
 }
