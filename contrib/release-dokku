@@ -409,7 +409,7 @@ main() {
   local CURRENT_VERSION NEXT_VERSION IS_PATCH IS_RELEASE
   local VALID_RELEASE_LEVELS=("major" "minor" "patch" "betafish" "build")
 
-  TRACE=1 && set -x
+  # TRACE=1 && set -x
 
   if [[ "$RELEASE" == '--trace' ]]; then
     shift 1
