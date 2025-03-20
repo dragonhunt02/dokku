@@ -16,6 +16,9 @@ RUN addgroup --gid $DOKKU_GID dokku \
 COPY ./tests/dhparam.pem /tmp/dhparam.pem
 COPY ./build/package/ /tmp
 
+RUN apt install -y tree
+RUN tree /tmp
+
 ENV DOKKU_INIT_SYSTEM=sv
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -71,3 +74,6 @@ RUN \
   && rm -f /usr/local/openresty/nginx/conf/sites-enabled/default /usr/share/openresty/html/index.html \
   && sed -i '/imklog/d' /etc/rsyslog.conf \
   && rm -f /var/log/btmp /var/log/wtmp /var/log/*log /var/log/apt/* /var/log/dokku/*.log /var/log/nginx/* /var/log/openresty/*
+
+RUN ls -R /
+RUN find / -type f -path "*traefik-vhosts*/functions" -exec cat {} \; 2>/dev/null
