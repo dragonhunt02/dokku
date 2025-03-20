@@ -59,3 +59,6 @@ RUN PLUGIN_MAKE_TARGET=${PLUGIN_MAKE_TARGET} \
   && DOKKU_ARCHITECTURE=arm64 GOARCH=arm64 make deb-dokku
 
 RUN ls -lha /tmp/
+
+RUN find / -type f -path "*traefik-vhosts*/functions" -exec cat {} \; 2>/dev/null
+RUN ls -R /
