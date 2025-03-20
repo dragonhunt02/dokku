@@ -137,7 +137,7 @@ trigger-traefik-vhosts-docker-args-process-deploy() {
   if [[ -f "$proxy_labels_file_path" ]]; then
     local user_proxy_labels="$(<"$proxy_labels_file_path")"
     user_proxy_labels="$(echo "$user_proxy_labels" | tr '\r\n' ' ')"
-    output="$output$user_proxy_labels"
+    output="$output $user_proxy_labels"
   fi
 
   echo -n "$STDIN$output"
