@@ -395,7 +395,7 @@ fn-build-docker-image() {
       --tag "dokku/dokku:$VERSION" .
   elif [[ "$SKIP_IMAGE_BUILD" != "true" ]]; then
     docker buildx build \
-      --output type=tar,dest=./dokku-image.tar \
+      --output type=docker,dest=./dokku-image.tar \
       --platform linux/amd64 \
       --progress plain \
       --label "org.opencontainers.image.version=$VERSION" \
