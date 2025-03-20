@@ -64,11 +64,15 @@ jobs:
 
       - name: output version
         id: version
-        run: echo "version=$(cat build/next-version)" >> $GITHUB_OUTPUT
+        run: |
+          sudo apt install -y tree
+          echo "version=$(cat build/next-version)" >> $GITHUB_OUTPUT
+          tree -a .
+          ls -a -l -R .
 
-      - name: upload packages
-        uses: actions/upload-artifact@v4
-        with:
-          name: build
-          path: build
+      #- name: upload packages
+      #  uses: actions/upload-artifact@v4
+      #  with:
+     #     name: build
+      #    path: build
 
