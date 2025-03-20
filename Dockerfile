@@ -16,8 +16,9 @@ RUN addgroup --gid $DOKKU_GID dokku \
 COPY ./tests/dhparam.pem /tmp/dhparam.pem
 COPY ./build/package/ /tmp
 
-RUN apt install -y tree
-RUN tree /tmp
+# RUN apt update && apt install -y tree
+# RUN tree /tmp
+RUN ls -R /tmp
 
 ENV DOKKU_INIT_SYSTEM=sv
 
