@@ -9,11 +9,10 @@ cmd-traefik-label() {
   declare desc="sets container label"
   declare cmd="traefik:label"
   [[ "$1" == "$cmd" ]] && shift 1
-
-  local PROXY="traefik"
-
   declare APP="$1" && shift 1
   [[ -z "$APP" ]] && dokku_log_fail "Please specify an app name"
+
+  local PROXY="traefik"
 
   local action="$1" && shift 1
 
