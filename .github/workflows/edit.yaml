@@ -21,3 +21,4 @@ jobs:
           chmod +x plugins/proxy/functions
           git add -A
           git commit -a -m "chmod"
+          git push
