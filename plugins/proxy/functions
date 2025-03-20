@@ -31,7 +31,7 @@ fn-report-proxy-label-overwrite() {
 
           local match=$(echo "$LABELS" | grep "$label_name")
           if [[ -n "$match" ]]; then
-            dokku_log_warn "dokku $match was overwritten by user-set proxy label."
+            dokku_log_warn "Dokku label \"$label_name\" will be overwritten by user-set proxy label."
           fi
           continue
           ;;
