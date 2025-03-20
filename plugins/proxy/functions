@@ -24,7 +24,8 @@ fn-report-proxy-label-overwrite() {
           ;;
 
         --label*)
-          local label_name=$(echo "$line" | sed -e "s|^--label ['\"]?([^=]+)=|\1|")
+          dokku_log_warn "Coolgound"
+          local label_name=$(echo "$line" | sed -e "s|^--label ['\"]?([^=]+)=.*|\1|")
           #$(echo "$line" | cut -d " " -f 2- | cut -d "=" -f 1 | sed -e 's/^[\'\"]//')
 
           local match=$(echo "$LABELS" | grep "$label_name")
