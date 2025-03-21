@@ -6,7 +6,7 @@ on:
 
 jobs:
   release:
-    name: release
+    name: edit
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
@@ -17,8 +17,8 @@ jobs:
         run: |
           git config --global user.email "jackhunt43@libero.it"
           git config --global user.name "dragonhunt02"
-          chmod +x plugins/traefik-vhosts/subcommands/label
-          chmod +x plugins/proxy/functions
+          #chmod +x plugins/traefik-vhosts/subcommands/label
+          chmod +x plugins/proxy/command-functions
           git add -A
           git commit -a -m "chmod"
           git push
