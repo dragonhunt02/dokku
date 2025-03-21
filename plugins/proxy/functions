@@ -3,15 +3,12 @@ set -eo pipefail
 [[ $DOKKU_TRACE ]] && set -x
 source "$PLUGIN_CORE_AVAILABLE_PATH/common/functions"
 
-AVAILABLE_PROXIES=(caddy traefik)
-
 fn-report-proxy-label-overwrite() {
   LABELS="$1"
   PROXY_LABELS_FILE_PATH="$2"
   shift 2
 
-  if [[ -f "$PROXY_LABELS_FILE_PATH" ]]; then  
-    dokku_log_warn "Coolfkund"
+  if [[ -f "$PROXY_LABELS_FILE_PATH" ]]; then
     local DONE=false
     until $DONE; do
       local line
@@ -25,10 +22,7 @@ fn-report-proxy-label-overwrite() {
           ;;
 
         --label*)
-          dokku_log_warn "Coolgound"
           local label_name=$(echo "$line" | sed -E "s|^--label ['\"]?([^=]+)=.*|\1|")
-          #$(echo "$line" | cut -d " " -f 2- | cut -d "=" -f 1 | sed -e 's/^[\'\"]//')
-
           local match=$(echo "$LABELS" | grep "$label_name")
           if [[ -n "$match" ]]; then
             dokku_log_warn "Dokku label \"$label_name\" will be overwritten by user-set proxy label."
@@ -76,7 +70,6 @@ display_proxy_labels() {
   shift 2
 
   local proxy_labels_file_path=$(get_proxy_labels_file_path "$APP" "$PROXY")
-  #local all_proxy_labels="$(<"$proxy_labels_file_path")"
   echo "${PROXY^} labels:"
   sed -e 's/^/    /' "$proxy_labels_file_path"
 }
@@ -88,10 +81,10 @@ add_passed_proxy_label() {
   local passed_label_name="$3"
   local passed_label_value="$4"
   shift 4
+
   local proxy_labels_file_path="$(get_proxy_labels_file_path "$APP" "$PROXY")"
   create_proxy_labels_file_if_required "$proxy_labels_file_path"
   echo "--label '${passed_label_name}=${passed_label_value}' " >>"$proxy_labels_file_path"
-
   local all_proxy_labels="$(<"$proxy_labels_file_path")"
   echo -e "${all_proxy_labels}" | sed '/^$/d' | sort -u >"$proxy_labels_file_path"
 }
@@ -106,13 +99,8 @@ remove_passed_proxy_label() {
   local proxy_labels_file_path="$(get_proxy_labels_file_path "$APP" "$PROXY")"
   [[ ! -s "$proxy_labels_file_path" ]] || {
     local all_proxy_labels="$(<"$proxy_labels_file_path")"
-    local escaped_label_name="$(escape_extended_sed "$passed_label_name")"
-
-    echo "escaped $escaped_label_name"
-    
+    local escaped_label_name="$(escape_extended_sed "$passed_label_name")"   
     local all_proxy_labels="$(echo -e "${all_proxy_labels}" | sed -E "s/^--label ['\"]?${escaped_label_name}=.*\$//")"
-    local all_proxy_labels2="$(echo -e "${all_proxy_labels}" | sed --debug -E "s/^--label ['\"]?${escaped_label_name}=.*\$//")"
-   echo -e "${all_proxy_labels2}"
     echo -e "${all_proxy_labels}" | sed '/^$/d' | sort -u >"$proxy_labels_file_path"
   }
 }
