@@ -24,7 +24,6 @@ cmd-proxy-label() {
   [[ -z "$passed_label_name" ]] && dokku_log_fail "Please specify a container label for the app"
 
   local passed_label_value="$1"
-  # [[ -z "$passed_label_value" ]] && dokku_log_fail "Please specify a label value to add to the app"
 
   if [[ "$action" == "set" ]]; then
     add_passed_proxy_label "$APP" "$PROXY" "${passed_label_name}" "${passed_label_value}"
@@ -33,5 +32,4 @@ cmd-proxy-label() {
   else
     dokku_log_fail "Internal error"
   fi
-
 }
