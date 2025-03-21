@@ -12,7 +12,8 @@ cmd-traefik-label() {
   [[ "$1" == "$cmd" ]] && shift 1
   declare APP="$1"
 
-  cmd-proxy-label traefik "$@"
+  set -- traefik "$@" 
+  cmd-proxy-label "$@"
 
 }
 
