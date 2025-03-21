@@ -20,7 +20,7 @@ jobs:
           chmod +x plugins/openresty-vhosts/subcommands/label
           chmod +x plugins/haproxy-vhosts/subcommands/label
           chmod +x plugins/caddy-vhosts/subcommands/label
-          #chmod +x plugins/proxy/command-functions
+          #chmod +x plugins/proxy/command-functions 
           git add -A
           git commit -a -m "chmod"
           git push
