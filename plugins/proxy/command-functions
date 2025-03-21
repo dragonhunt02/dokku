@@ -5,11 +5,11 @@ set -eo pipefail
 [[ $DOKKU_TRACE ]] && set -x
 
 cmd-proxy-label() {
-  local APP="$1" && shift 1
-  [[ -z "$APP" ]] && dokku_log_fail "Please specify an app name"
-
   local PROXY="$1" && shift 1
   [[ -z "$PROXY" ]] && dokku_log_fail "Please specify a proxy name"
+
+  local APP="$1" && shift 1
+  [[ -z "$APP" ]] && dokku_log_fail "Please specify an app name"
 
   local action="$1" && shift 1
 
