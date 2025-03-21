@@ -14,7 +14,6 @@ cmd-traefik-label() {
 
   set -- traefik "$@" 
   cmd-proxy-label "$@"
-
 }
 
 cmd-traefik-report() {
