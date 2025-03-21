@@ -106,7 +106,7 @@ remove_passed_proxy_label() {
   local proxy_labels_file_path="$(get_proxy_labels_file_path "$APP" "$PROXY")"
   [[ ! -s "$proxy_labels_file_path" ]] || {
     local all_proxy_labels="$(<"$proxy_labels_file_path")"
-    escaped_label_name="$(escape_extended_sed "passed_label_name")"
+    local escaped_label_name="$(escape_extended_sed "passed_label_name")"
     local all_proxy_labels=$(echo -e "${all_proxy_labels}" | sed -E "s/^--label ['\"]?${escaped_label_name}=.*\$//")
     echo -e "${all_proxy_labels}" | sed '/^$/d' | sort -u >"$proxy_labels_file_path"
   }
