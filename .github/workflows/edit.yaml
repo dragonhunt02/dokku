@@ -17,8 +17,10 @@ jobs:
         run: |
           git config --global user.email "jackhunt43@libero.it"
           git config --global user.name "dragonhunt02"
-          #chmod +x plugins/traefik-vhosts/subcommands/label
-          chmod +x plugins/proxy/command-functions
+          chmod +x plugins/openresty-vhosts/subcommands/label
+          chmod +x plugins/haproxy-vhosts/subcommands/label
+          chmod +x plugins/caddy-vhosts/subcommands/label
+          #chmod +x plugins/proxy/command-functions
           git add -A
           git commit -a -m "chmod"
           git push
