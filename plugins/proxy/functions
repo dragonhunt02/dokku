@@ -22,8 +22,8 @@ fn-report-proxy-label-overwrite() {
           ;;
 
         --label*)
-          local label_name=$(echo "$line" | sed -E "s|^--label ['\"]?([^=]+)=.*|\1|")
-          local match=$(echo "$LABELS" | grep "$label_name")
+          local label_name="$(echo "$line" | sed -E "s|^--label ['\"]?([^=]+)=.*|\1|")"
+          local match="$(echo "$LABELS" | grep "$label_name")"
           if [[ -n "$match" ]]; then
             dokku_log_warn "Dokku label \"$label_name\" will be overwritten by user-set proxy label."
           fi
@@ -64,14 +64,32 @@ create_proxy_labels_file_if_required() {
 }
 
 display_proxy_labels() {
-  declare desc="print app container labels for specified proxy"
+  declare desc="print user-set app container labels for specified proxy"
   local APP="$1"
   local PROXY="$2"
   shift 2
 
-  local proxy_labels_file_path=$(get_proxy_labels_file_path "$APP" "$PROXY")
+  local proxy_labels_file_path="$(get_proxy_labels_file_path "$APP" "$PROXY")"
   echo "${PROXY^} labels:"
   sed -e 's/^/    /' "$proxy_labels_file_path"
+}
+
+show_proxy_label() {
+  declare desc="print single user-set app container label for specified proxy"
+  local APP="$1"
+  local PROXY="$2"
+  local passed_label_name="$3"
+  shift 3
+
+  local proxy_labels_file_path="$(get_proxy_labels_file_path "$APP" "$PROXY")"
+  [[ ! -s "$proxy_labels_file_path" ]] || {
+    local all_proxy_labels="$(<"$proxy_labels_file_path")"
+    local escaped_label_name="$(escape_extended_sed "$passed_label_name")"   
+    local proxy_label_value="$(echo -e "${all_proxy_labels}" | sed -E "s/^--label ['\"]?${escaped_label_name}=(.*)\$/\1/")"
+
+    echo "${PROXY^} label:"
+    echo "    ${proxy_label_name}: ${proxy_label_value}"
+  }
 }
 
 add_passed_proxy_label() {
