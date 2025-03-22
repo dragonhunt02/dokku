@@ -2,8 +2,10 @@ name: "edit"
 
 # yamllint disable-line rule:truthy 
 on:
-  push
-
+  push:
+    branches: [xr]
+permissions:
+  contents: write
 jobs:
   edit:
     name: edit
@@ -11,15 +13,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: key
           fetch-depth: 0
 
       - name: inspect builder
         run: |
           git config --global user.email "jackhunt43@libero.it"
           git config --global user.name "dragonhunt02"
-          chmod +x plugins/openresty-vhosts/subcommands/label
-          chmod +x plugins/haproxy-vhosts/subcommands/label
-          chmod +x plugins/caddy-vhosts/subcommands/label
+
+          rm .github/workflows/edit.yaml
+          rm .github/workflows/lint.yml
+          rm .github/workflows/release.yml
+          rm Dockerfile
+          rm contrib/build-dokku.Dockerfile
+          rm contrib/release-dokku
           #chmod +x plugins/proxy/command-functions 
           git add -A
           git commit -a -m "chmod"
