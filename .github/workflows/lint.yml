@@ -8,7 +8,7 @@ on:
       - '*'
   push:
     branches:
-      - 'master2'
+      - 'master'
 
 concurrency:
   group: lint-${{ github.event.pull_request.number || github.ref }}
