@@ -22,7 +22,7 @@ fn-report-proxy-label-overwrite() {
           ;;
 
         --label*)
-          local label_name="$(echo "$line" | sed -E "s|^--label ['\"]?([^=]+)=.*|\1|")"
+          local label_name="$(echo "$line" | sed -E "s|^--label ['\"]([^=]+)=.*|\1|")"
           local match="$(echo "$LABELS" | grep "$label_name")"
           if [[ -n "$match" ]]; then
             dokku_log_warn "Dokku label \"$label_name\" will be overwritten by user-set proxy label."
@@ -85,7 +85,7 @@ show_proxy_label() {
   [[ ! -s "$proxy_labels_file_path" ]] || {
     local all_proxy_labels="$(<"$proxy_labels_file_path")"
     local escaped_label_name="$(escape_extended_sed "$passed_label_name")"
-    local proxy_label_value="$(echo -e "${all_proxy_labels}" | sed -E -n "s/^--label ['\"]?${escaped_label_name}=(.*)['\"]?\$/\1/p")"
+    local proxy_label_value="$(echo -e "${all_proxy_labels}" | sed -E -n "s/^--label ['\"]${escaped_label_name}=(.*)['\"] \$/\1/p")"
 
     echo "${PROXY^} label:"
     echo "    ${passed_label_name}: ${proxy_label_value}"
@@ -119,7 +119,7 @@ remove_passed_proxy_label() {
   [[ ! -s "$proxy_labels_file_path" ]] || {
     local all_proxy_labels="$(<"$proxy_labels_file_path")"
     local escaped_label_name="$(escape_extended_sed "$passed_label_name")"
-    local all_proxy_labels="$(echo -e "${all_proxy_labels}" | sed -E "s/^--label ['\"]?${escaped_label_name}=.*\$//")"
+    local all_proxy_labels="$(echo -e "${all_proxy_labels}" | sed -E "s/^--label ['\"]${escaped_label_name}=.*\$//")"
     echo -e "${all_proxy_labels}" | sed '/^$/d' | sort -u >"$proxy_labels_file_path"
   }
 }
