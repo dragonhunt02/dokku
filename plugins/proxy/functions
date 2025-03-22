@@ -22,10 +22,11 @@ fn-report-proxy-label-overwrite() {
           ;;
 
         --label*)
-          local label_name="$(echo "$line" | sed -E "s|^--label ['\"]([^=]+)=.*|\1|")"
-          local match="$(echo "$LABELS" | grep "$label_name")"
+          local label_name="$(echo "$line" | sed -E "s/^--label ['\"]([^=]+)=.*/\1/")"
+          local escaped_label_name="$(escape_extended_sed "$passed_label_name")"
+          local match="$(echo "$LABELS" | sed -E "s/.*--label ['\"]($escaped_label_name)=.*/\1/")"
           if [[ -n "$match" ]]; then
-            dokku_log_warn "Dokku label \"$label_name\" will be overwritten by user-set proxy label."
+            dokku_log_warn "Dokku label \"$match\" will be overwritten by user-set proxy label."
           fi
           continue
           ;;
