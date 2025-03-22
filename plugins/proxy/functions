@@ -85,10 +85,10 @@ show_proxy_label() {
   [[ ! -s "$proxy_labels_file_path" ]] || {
     local all_proxy_labels="$(<"$proxy_labels_file_path")"
     local escaped_label_name="$(escape_extended_sed "$passed_label_name")"
-    local proxy_label_value="$(echo -e "${all_proxy_labels}" | sed -E "s/^--label ['\"]?${escaped_label_name}=(.*)\$/\1/")"
+    local proxy_label_value="$(echo -e "${all_proxy_labels}" | sed -E -n "s/^--label ['\"]?${escaped_label_name}=(.*)\$/\1/p")"
 
     echo "${PROXY^} label:"
-    echo "    ${proxy_label_name}: ${proxy_label_value}"
+    echo "    ${passed_label_name}: ${proxy_label_value}"
   }
 }
 
