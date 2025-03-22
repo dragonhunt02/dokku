@@ -14,20 +14,21 @@ cmd-proxy-label() {
   local action="$1" && shift 1
   [[ "$action" != "set" && "$action" != "unset" && "$action" != "show" ]] && dokku_log_fail "Please specify a valid action ('set', 'unset' or 'show')"
 
-  local passed_label_name="$1" && shift 1
-  ! [[ "$passed_label_name" =~ ^$PROXY ]] && dokku_log_fail "Please specify a valid $PROXY label name for the app"
-
-  if [[ "$action" == "show" && -z "$passed_label_name" ]]; then
+  if [[ "$action" == "show" && "$#" == "0" ]]; then
     display_proxy_labels "$APP" "$PROXY"
     return 0
-  elif [[ "$action" == "show" ]]; then
+  fi
+
+  local passed_label_name="$1" && shift 1
+  [[ -z "$passed_label_name" ]] && dokku_log_fail "Please specify a container label for the app"
+  [[ ! "$passed_label_name" =~ ^$PROXY ]] && dokku_log_fail "Please specify a valid $PROXY label name for the app"
+
+  if [[ "$action" == "show" ]]; then
     show_proxy_label "$APP" "$PROXY" "$passed_label_name"
     return 0
   fi
 
   # set/unset
-  [[ -z "$passed_label_name" ]] && dokku_log_fail "Please specify a container label for the app"
-
   local passed_label_value="$1"
 
   if [[ "$action" == "set" ]]; then
