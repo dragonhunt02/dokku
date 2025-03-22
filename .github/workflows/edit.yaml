@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: key
+          ref: label
           fetch-depth: 0
 
       - name: inspect builder
@@ -29,5 +29,5 @@ jobs:
           rm contrib/release-dokku
           #chmod +x plugins/proxy/command-functions 
           git add -A
-          git commit -a -m "chmod"
+          git commit -a -m "remove changes"
           git push
