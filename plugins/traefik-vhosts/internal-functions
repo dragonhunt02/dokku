@@ -28,12 +28,15 @@ fn-traefik-logs-usage() {
 fn-traefik-template-compose-file() {
   declare desc="templates out the compose file"
   declare OUTPUT_PATH="$1"
+  declare APP="$2"
   local COMPOSE_TEMPLATE="$PLUGIN_AVAILABLE_PATH/traefik-vhosts/templates/compose.yml.sigil"
   local basic_auth basic_auth_password basic_auth_username
 
   CUSTOM_COMPOSE_TEMPLATE="$(plugn trigger traefik-template-source "$APP")"
   if [[ -n "$CUSTOM_COMPOSE_TEMPLATE" ]]; then
     COMPOSE_TEMPLATE="$CUSTOM_COMPOSE_TEMPLATE"
+  elif [[ ! -s "$DOKKU_ROOT/$APP/traefik.yml.sigil" ]]; then
+    COMPOSE_TEMPLATE="$DOKKU_ROOT/$APP/traefik.yml.sigil"
   fi
 
   basic_auth_password="$(fn-traefik-basic-auth-password)"
