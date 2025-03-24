@@ -28,15 +28,23 @@ fn-traefik-logs-usage() {
 fn-traefik-template-compose-file() {
   declare desc="templates out the compose file"
   declare OUTPUT_PATH="$1"
-  declare APP="$2"
   local COMPOSE_TEMPLATE="$PLUGIN_AVAILABLE_PATH/traefik-vhosts/templates/compose.yml.sigil"
   local basic_auth basic_auth_password basic_auth_username
 
   CUSTOM_COMPOSE_TEMPLATE="$(plugn trigger traefik-template-source "$APP")"
+  local compose_template_app_path=""
+  for app in $(dokku_apps); do
+    if [[ -f "$DOKKU_ROOT/$app/traefik.yml.sigil" ]]; then
+      if [[ -n "$compose_template_app_path" ]]; then
+        dokku_log_fail "Found two 'traefik.yml.sigil' files in different app root folders. Only one proxy compose file is allowed."
+      fi
+      compose_template_app_path="$DOKKU_ROOT/$app/traefik.yml.sigil"
+    fi
+  done
   if [[ -n "$CUSTOM_COMPOSE_TEMPLATE" ]]; then
     COMPOSE_TEMPLATE="$CUSTOM_COMPOSE_TEMPLATE"
-  elif [[ ! -s "$DOKKU_ROOT/$APP/traefik.yml.sigil" ]]; then
-    COMPOSE_TEMPLATE="$DOKKU_ROOT/$APP/traefik.yml.sigil"
+  elif [[ -n "$compose_template_app_path" ]]; then
+    COMPOSE_TEMPLATE="$compose_template_app_path"
   fi
 
   basic_auth_password="$(fn-traefik-basic-auth-password)"
