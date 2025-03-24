@@ -395,7 +395,8 @@ fn-build-docker-image() {
       --tag "dokku/dokku:$VERSION" .
   elif [[ "$SKIP_IMAGE_BUILD" != "true" ]]; then
     docker buildx build \
-      --platform linux/arm64,linux/amd64 \
+      --output type=docker,dest=./dokku-image.tar \
+      --platform linux/amd64 \
       --progress plain \
       --label "org.opencontainers.image.version=$VERSION" \
       --tag "dokku/dokku:latest" \
@@ -407,6 +408,8 @@ main() {
   declare RELEASE="$1"
   local CURRENT_VERSION NEXT_VERSION IS_PATCH IS_RELEASE
   local VALID_RELEASE_LEVELS=("major" "minor" "patch" "betafish" "build")
+
+  # TRACE=1 && set -x
 
   if [[ "$RELEASE" == '--trace' ]]; then
     shift 1
