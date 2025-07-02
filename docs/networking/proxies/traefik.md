@@ -9,6 +9,9 @@ Dokku provides integration with the [Traefik](https://traefik.io/) proxy service
 traefik:report [<app>] [<flag>]          # Displays a traefik report for one or more apps
 traefik:logs [--num num] [--tail]        # Display traefik log output
 traefik:set <app> <property> (<value>)   # Set or clear an traefik property for an app
+traefik:label <app> set <name> <value>   # Set a traefik label for an app
+traefik:label <app> show [<name>]        # Show a traefik label for an app
+traefik:label <app> unset <name>         # Clear a traefik label for an app
 traefik:show-config <app>                # Display traefik compose config
 traefik:start                            # Starts the traefik server
 traefik:stop                             # Stops the traefik server
@@ -85,6 +88,37 @@ For debugging purposes, it may be useful to show the Traefik compose config. Thi
 ```shell
 dokku traefik:show-config
 ```
+
+### Configuring the Traefik container labels
+
+Traefik container loads individual app configuration from image labels. You can find more instructions on labels at [traefik.io docs](https://doc.traefik.io/traefik/routing/providers/docker/).
+
+#### Display all user-set labels
+
+```shell
+dokku traefik:label show
+```
+
+#### Set/Unset/Show a user label
+
+All label names must start with `traefik.` to be recognized.
+
+After setting labels, you should run `ps:restart <app>` to reload app configuration.
+
+```shell
+# Example: Only route requests to `dokku.me` Host starting with `/api` path
+dokku traefik:label node-js-app set traefik.http.routers.node-js-app-web-http.rule 'Host(`dokku.me`) && PathPrefix(`/api/`)'
+```
+```shell
+# Show label value
+dokku traefik:label node-js-app show traefik.http.routers.node-js-app-web-http.rule
+```
+```shell
+# Unset label
+dokku traefik:label node-js-app unset traefik.http.routers.node-js-app-web-http.rule
+```
+
+Dokku sets some proxy labels on app containers by default, but you can override them with `traefik:label <app> set`.
 
 ### Customizing the Traefik container image
 
