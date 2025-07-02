@@ -9,6 +9,9 @@ Dokku provides integration with the [Caddy](https://caddyserver.com/) proxy serv
 caddy:report [<app>] [<flag>]            # Displays a caddy report for one or more apps
 caddy:logs [--num num] [--tail]          # Display caddy log output
 caddy:set <app> <property> (<value>)     # Set or clear an caddy property for an app
+caddy:label <app> set <name> <value>     # Set a caddy label for an app
+caddy:label <app> show [<name>]          # Show a caddy label for an app
+caddy:label <app> unset <name>           # Clear a caddy label for an app
 caddy:show-config <app>                  # Display caddy compose config
 caddy:start                              # Starts the caddy server
 caddy:stop                               # Stops the caddy server
@@ -75,6 +78,37 @@ For debugging purposes, it may be useful to show the Caddy compose config. This 
 ```shell
 dokku caddy:show-config
 ```
+
+### Configuring the Caddy container labels
+
+Caddy container loads individual app configuration from image labels. You can find more instructions on labels at [lucaslorentz/caddy-docker-proxy](https://github.com/lucaslorentz/caddy-docker-proxy/blob/master/README.md)
+
+#### Display all user-set labels
+
+```shell
+dokku caddy:label show
+```
+
+#### Set/Unset/Show a user label
+
+All label names must start with `caddy.` to be recognized.
+
+After setting labels, you should run `ps:restart <app>` to reload app configuration.
+
+```shell
+# Example: Disable http to https redirection
+dokku caddy:label node-js-app set caddy.auto_https disable_redirects
+```
+```shell
+# Show label value
+dokku caddy:label node-js-app show caddy.auto_https
+```
+```shell
+# Unset label
+dokku caddy:label node-js-app unset caddy.auto_https
+```
+
+Dokku sets some proxy labels on app containers by default, but you can override them with `caddy:label set`.
 
 ### Customizing the Caddy container image
 
