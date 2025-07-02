@@ -9,6 +9,9 @@ Dokku provides integration with the [Haproxy](http://www.haproxy.org) proxy serv
 haproxy:report [<app>] [<flag>]            # Displays a haproxy report for one or more apps
 haproxy:logs [--num num] [--tail]          # Display haproxy log output
 haproxy:set <app> <property> (<value>)     # Set or clear an haproxy property for an app
+haproxy:label <app> set <name> <value>     # Set a haproxy label for an app
+haproxy:label <app> show [<name>]          # Show a haproxy label for an app
+haproxy:label <app> unset <name>           # Clear a haproxy label for an app
 haproxy:show-config <app>                  # Display haproxy compose config
 haproxy:start                              # Starts the haproxy server
 haproxy:stop                               # Stops the haproxy server
@@ -71,6 +74,37 @@ For debugging purposes, it may be useful to show the Haproxy compose config. Thi
 ```shell
 dokku haproxy:show-config
 ```
+
+### Configuring the Haproxy container labels
+
+Haproxy container loads individual app configuration from image labels. You can find more instructions on labels at [byjg/docker-easy-haproxy](https://github.com/byjg/docker-easy-haproxy/blob/master/docs/container-labels.md)
+
+#### Display all user-set labels
+
+```shell
+dokku haproxy:label show
+```
+
+#### Set/Unset/Show a user label
+
+All label names must start with `easyhaproxy.` to be recognized.
+
+After setting labels, you should run `ps:restart <app>` to reload app configuration.
+
+```shell
+# Example: Change load balancer to 'leastconn'
+dokku haproxy:label node-js-app set easyhaproxy.node-js-app.balance leastconn
+```
+```shell
+# Show label value
+dokku haproxy:label node-js-app show easyhaproxy.node-js-app.balance
+```
+```shell
+# Unset label
+dokku haproxy:label node-js-app unset easyhaproxy.node-js-app.balance
+```
+
+Dokku sets some proxy labels on app containers by default, but you can override them with `haproxy:label set`.
 
 ### Customizing the Haproxy container image
 
