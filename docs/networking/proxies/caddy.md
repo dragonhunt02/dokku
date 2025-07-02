@@ -108,7 +108,7 @@ dokku caddy:label node-js-app show caddy.auto_https
 dokku caddy:label node-js-app unset caddy.auto_https
 ```
 
-Dokku sets some proxy labels on app containers by default, but you can override them with `caddy:label set`.
+Dokku sets some proxy labels on app containers by default, but you can override them with `caddy:label <app> set`.
 
 ### Customizing the Caddy container image
 
