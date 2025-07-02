@@ -106,7 +106,7 @@ All label names must start with `traefik.` to be recognized.
 After setting labels, you should run `ps:restart <app>` to reload app configuration.
 
 ```shell
-# Example: Only route requests to `dokku.me` Host starting with `/api` path
+# Example: Only route requests to `dokku.me` Host starting with `/api/` path
 dokku traefik:label node-js-app set traefik.http.routers.node-js-app-web-http.rule 'Host(`dokku.me`) && PathPrefix(`/api/`)'
 ```
 ```shell
