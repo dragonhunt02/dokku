@@ -104,7 +104,7 @@ dokku haproxy:label node-js-app show easyhaproxy.node-js-app.balance
 dokku haproxy:label node-js-app unset easyhaproxy.node-js-app.balance
 ```
 
-Dokku sets some proxy labels on app containers by default, but you can override them with `haproxy:label set`.
+Dokku sets some proxy labels on app containers by default, but you can override them with `haproxy:label <app> set`.
 
 ### Customizing the Haproxy container image
 
