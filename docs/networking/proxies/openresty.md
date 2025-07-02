@@ -9,6 +9,9 @@ Dokku can provide integration with the [OpenResty](https://openresty.org/) proxy
 openresty:report [<app>] [<flag>]            # Displays a openresty report for one or more apps
 openresty:logs [--num num] [--tail]          # Display openresty log output
 openresty:set <app> <property> (<value>)     # Set or clear an openresty property for an app
+openresty:label <app> set <name> <value>     # Set a openresty label for an app
+openresty:label <app> show [<name>]          # Show a openresty label for an app
+openresty:label <app> unset <name>           # Clear a openresty label for an app
 openresty:show-config <app>                  # Display openresty compose config
 openresty:start                              # Starts the openresty server
 openresty:stop                               # Stops the openresty server
@@ -71,6 +74,37 @@ For debugging purposes, it may be useful to show the OpenResty compose config. T
 ```shell
 dokku openresty:show-config
 ```
+
+### Configuring the OpenResty container labels
+
+OpenResty container loads individual app configuration from image labels. You can find more instructions on labels at [dokku/openresty-docker-proxy](https://github.com/dokku/openresty-docker-proxy/blob/main/README.md)
+
+#### Display all user-set labels
+
+```shell
+dokku openresty:label show
+```
+
+#### Set/Unset/Show a user label
+
+All label names must start with `openresty.` to be recognized.
+
+After setting labels, you should run `ps:restart <app>` to reload app configuration.
+
+```shell
+# Example: Disable proxy buffering
+dokku openresty:label node-js-app set openresty.proxy-buffering off
+```
+```shell
+# Show label value
+dokku openresty:label node-js-app show openresty.proxy-buffering
+```
+```shell
+# Unset label
+dokku openresty:label node-js-app unset openresty.proxy-buffering
+```
+
+Dokku sets some proxy labels on app containers by default, but you can override them with `openresty:label <app> set`.
 
 ### Customizing the OpenResty container image
 
